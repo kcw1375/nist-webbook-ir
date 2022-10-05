@@ -1,6 +1,39 @@
 # NIST-Webbook-IR
 A utility to search through IR spectra on the NIST chemistry webbook (https://webbook.nist.gov/chemistry/) and find matches for molecules based on absorption bands.
 
+## Getting Started
+First import the `spectrum` module to gain access to the functions.
+To get a dictionary representing all the data within a specific IR spectrum, use:
+```
+data = spectrum.parse_jcampdx(spectrum.get_jcampdx('C71432', 0))
+```
+This data is the contents of the JCAMP-DX file with index 0 for molecule ID C71432 (Benzene).
+The index number is important if there are multiple IR spectra recorded for a specific molecule, but usually leaving it on 0 is fine.
+
+This data can then be plotted or otherwise manipulated using `matplotlib` or other libraries.
+
+
+However, the more powerful feature is the ability to search and filter molecules by their IR absorption peaks.
+```
+search_results = spectrum.search('*amide')
+desired_peaks = [
+    PeakCriteria((500, 800)),
+    PeakCriteria((2000, 2750), 0),
+    PeakCriteria((1500, 1700), 1),
+    ]
+matching_spectra = dict()
+
+for k in search_results:
+    data = spectrum.parse_jcampdx(spectrum.get_jcampdx(k,0))
+    peaks_found = spectrum.spectra_match(data, desired_peaks)
+    
+    if np.all(peaks_found):
+        matching_spectra[k] = search_results[k]
+```
+This code selects amide molecules that have a peak of any size between 500-800 cm^-1, are flat between 2000-2750 cm^-1, and have their strongest peak between 1500-1700 cm^-1.
+
+See the jupyter notebook provided within this repo for examples.
+
 ## ISSUES
 This program depends on the jcamp package, but the pip release is currently broken.
 Luckily, this is a simple fix.
