@@ -1,0 +1,4 @@
+beautifulsoup4==4.11.1
+jcamp==1.2.1
+numpy==1.23.3
+requests==2.28.1
