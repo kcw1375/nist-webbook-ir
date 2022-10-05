@@ -36,7 +36,7 @@ def search(term):
     response = requests.get(search_url)
 
     # parse html to get search results
-    soup = BeautifulSoup(response.content)
+    soup = BeautifulSoup(response.content, features='html.parser')
     results = dict()
 
     for result in soup.find('ol').find_all('li'):
