@@ -61,6 +61,9 @@ def spectra_match(data, peaks):
     Returns:
     a list of bools, where each element i represents if a peak satisfying the peak criteria was found in the region described by peaks[i]
     '''
+    if(len(data['y']) == 0):
+        return [False] * len(peaks)
+
     spectrum = np.array([data['x'], data['y']])
     # print(spectrum.shape)
     # first get the background radiation level by computing the median
