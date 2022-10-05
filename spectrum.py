@@ -1,6 +1,7 @@
 '''code to download and read IR spectra'''
 
 import requests
+from jcamp import jcamp_read
 
 def get_jcampdx(molecule_id, index):
     '''
@@ -13,3 +14,6 @@ def get_jcampdx(molecule_id, index):
     content = response.content.splitlines()
     content = [line.decode("utf-8") for line in content]
     return content
+
+def parse_jcampdx(content):
+    return jcamp_read(content)
