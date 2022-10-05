@@ -69,14 +69,25 @@ def spectra_match(data, bands):
     threshold = np.std(spectrum[1]) # let's use 1 standard deviation
     print(background, threshold)
 
+    # plot is either absorbance or transmittance, which will determine how we calculate peaks
+    # thus, check yunits
+    is_absorbance = (data['yunits'] == 'ABSORBANCE')
+
     matches = []
     for band in bands:
         limits = (band[0] < spectrum[0]) * (spectrum[0] < band[1])
 
-        # for now, we use the naive method of checking the max within these limits and seeing if that's above the threshold
-        max_y = np.max(spectrum[1, limits])
-        print(max_y)
-        
-        matches.append(max_y > background + threshold)
+        # if is an absorbance plot
+        if is_absorbance:
+            # we use the naive method of checking the max within these limits and seeing if that's above the threshold
+            max_y = np.max(spectrum[1, limits])
+            print(max_y)
+            matches.append(max_y > background + threshold)
+        else: # if is a transmittance plot
+            # instead check the minimum
+            min_y = np.min(spectrum[1, limits])
+            print(min_y)
+            matches.append(min_y < background - threshold)
+
         
     return matches
