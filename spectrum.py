@@ -62,12 +62,12 @@ def spectra_match(data, bands):
     a list of bools, where each element i represents if a band was found in the region described by bands[i]
     '''
     spectrum = np.array([data['x'], data['y']])
-    print(spectrum.shape)
+    # print(spectrum.shape)
     # first get the background radiation level by computing the median
     background = np.median(spectrum[1])
     # now determine the threshold in deviation for absorption, above which we'll consider a peak
     threshold = np.std(spectrum[1]) # let's use 1 standard deviation
-    print(background, threshold)
+    # print(background, threshold)
 
     # plot is either absorbance or transmittance, which will determine how we calculate peaks
     # thus, check yunits
@@ -86,12 +86,12 @@ def spectra_match(data, bands):
         if is_absorbance:
             # we use the naive method of checking the max within these limits and seeing if that's above the threshold
             max_y = np.max(spectrum[1, limits])
-            print(max_y)
+            # print(max_y)
             matches.append(max_y > background + threshold)
         else: # if is a transmittance plot
             # instead check the minimum
             min_y = np.min(spectrum[1, limits])
-            print(min_y)
+            # print(min_y)
             matches.append(min_y < background - threshold)
 
         
