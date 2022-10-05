@@ -68,6 +68,15 @@ def spectra_match(data, peaks):
     # now determine the threshold in deviation for absorption, above which we'll consider a peak
     threshold = np.std(spectrum[1])/3 # let's use 1/3 standard deviation
     # print(background, threshold)
+    
+    # used for doing strength checks on peaks
+    # a peak with strength 1 should be the ceiling
+    # a peak with strength 0 should be the floor
+    # a peak with strength 0.5 should be the midpoint between the two
+    # with some percentage leeway
+    ceiling = np.max(spectrum[1])
+    floor = np.min(spectrum[1])
+    leeway = 0.15 # leeway for the 
 
     # plot is either absorbance or transmittance, which will determine how we calculate peaks
     # thus, check yunits
@@ -87,13 +96,23 @@ def spectra_match(data, peaks):
             # we use the naive method of checking the max within these limits and seeing if that's above the threshold
             max_y = np.max(spectrum[1, limits])
             # print(max_y)
-            matches.append(max_y > background + threshold)
+            over_threshold = max_y > background + threshold
+            if peak.strength != None:
+                correct_strength = ( np.abs( (max_y - floor)/(ceiling-floor) - peak.strength ) < leeway )
+            else:
+                correct_strength = True
+
         else: # if is a transmittance plot
             # instead check the minimum
             min_y = np.min(spectrum[1, limits])
             # print(min_y)
-            matches.append(min_y < background - threshold)
+            over_threshold = min_y < background - threshold
+            if peak.strength != None:
+                correct_strength = ( np.abs( (min_y - ceiling)/(floor-ceiling) - peak.strength ) < leeway )
+            else:
+                correct_strength = True
 
+        matches.append(over_threshold and correct_strength)
         
     return matches
 
