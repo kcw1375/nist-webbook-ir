@@ -71,7 +71,7 @@ def spectra_match(data, bands):
 
     # plot is either absorbance or transmittance, which will determine how we calculate peaks
     # thus, check yunits
-    is_absorbance = (data['yunits'] == 'ABSORBANCE')
+    is_absorbance = (data.get('yunits') == 'ABSORBANCE')
 
     matches = []
     for band in bands:
