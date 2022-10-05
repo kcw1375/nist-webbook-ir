@@ -2,7 +2,8 @@
 A utility to search through IR spectra on the NIST chemistry webbook (https://webbook.nist.gov/chemistry/) and find matches for molecules based on absorption bands.
 
 ## Getting Started
-First import the `spectrum` module to gain access to the functions.
+First install the dependencies by running `pip install -r requirements.txt` in your terminal.
+Then you can import the `spectrum` module to gain access to the functions.
 To get a dictionary representing all the data within a specific IR spectrum, use:
 ```
 data = spectrum.parse_jcampdx(spectrum.get_jcampdx('C71432', 0))
