@@ -84,6 +84,9 @@ def spectra_match(data, peaks):
     # plot is either absorbance or transmittance, which will determine how we calculate peaks
     # thus, check yunits
     is_absorbance = (data.get('yunits') == 'ABSORBANCE')
+    if data.get('yunits') == None:
+        # if units aren't given, use a heuristic instead based on background value
+        is_absorbance = background > 0.5
 
     matches = []
     for peak in peaks:
