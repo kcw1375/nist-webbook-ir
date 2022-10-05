@@ -66,7 +66,7 @@ def spectra_match(data, peaks):
     # first get the background radiation level by computing the median
     background = np.median(spectrum[1])
     # now determine the threshold in deviation for absorption, above which we'll consider a peak
-    threshold = np.std(spectrum[1]) # let's use 1 standard deviation
+    threshold = np.std(spectrum[1])/3 # let's use 1/3 standard deviation
     # print(background, threshold)
 
     # plot is either absorbance or transmittance, which will determine how we calculate peaks
