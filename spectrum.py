@@ -99,20 +99,22 @@ def spectra_match(data, peaks):
             # we use the naive method of checking the max within these limits and seeing if that's above the threshold
             max_y = np.max(spectrum[1, limits])
             # print(max_y)
-            over_threshold = max_y > background + threshold
             if peak.strength != None:
+                over_threshold = True # ignroe threshold check if peak strength specified
                 correct_strength = ( np.abs( (max_y - floor)/(ceiling-floor) - peak.strength ) < leeway )
             else:
+                over_threshold = max_y > background + threshold
                 correct_strength = True
 
         else: # if is a transmittance plot
             # instead check the minimum
             min_y = np.min(spectrum[1, limits])
             # print(min_y)
-            over_threshold = min_y < background - threshold
             if peak.strength != None:
+                over_threshold = True
                 correct_strength = ( np.abs( (min_y - ceiling)/(floor-ceiling) - peak.strength ) < leeway )
             else:
+                over_threshold = min_y < background - threshold
                 correct_strength = True
 
         matches.append(over_threshold and correct_strength)
