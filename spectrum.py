@@ -4,6 +4,7 @@ import requests
 from jcamp import jcamp_read
 from bs4 import BeautifulSoup
 import re
+import numpy as np
 
 def get_jcampdx(molecule_id, index):
     '''
@@ -48,3 +49,34 @@ def search(term):
         results[molecule_id] = (molecule_name, formula)
 
     return results
+
+def spectra_match(data, bands):
+    '''
+    defines a metric for how good a "match" an IR spectra to some desired absorption bands
+
+    Parameters:
+    data: a dictionary with 'x', 'y' keys, representing the IR spectrum to observe
+    bands: a list where each element is a 2-tuple, representing the low and high bounds to find an absorption beak
+    
+    Returns:
+    a list of bools, where each element i represents if a band was found in the region described by bands[i]
+    '''
+    spectrum = np.array([data['x'], data['y']])
+    print(spectrum.shape)
+    # first get the background radiation level by computing the median
+    background = np.median(spectrum[1])
+    # now determine the threshold in deviation for absorption, above which we'll consider a peak
+    threshold = np.std(spectrum[1]) # let's use 1 standard deviation
+    print(background, threshold)
+
+    matches = []
+    for band in bands:
+        limits = (band[0] < spectrum[0]) * (spectrum[0] < band[1])
+
+        # for now, we use the naive method of checking the max within these limits and seeing if that's above the threshold
+        max_y = np.max(spectrum[1, limits])
+        print(max_y)
+        
+        matches.append(max_y > background + threshold)
+        
+    return matches
