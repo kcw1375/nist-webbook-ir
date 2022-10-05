@@ -50,16 +50,16 @@ def search(term):
 
     return results
 
-def spectra_match(data, bands):
+def spectra_match(data, peaks):
     '''
     defines a metric for how good a "match" an IR spectra to some desired absorption bands
 
     Parameters:
     data: a dictionary with 'x', 'y' keys, representing the IR spectrum to observe
-    bands: a list where each element is a 2-tuple, representing the low and high bounds to find an absorption beak
+    peaks: a list of PeakCriteria, representing the properties of peaks that the IR spectra should have
     
     Returns:
-    a list of bools, where each element i represents if a band was found in the region described by bands[i]
+    a list of bools, where each element i represents if a peak satisfying the peak criteria was found in the region described by peaks[i]
     '''
     spectrum = np.array([data['x'], data['y']])
     # print(spectrum.shape)
@@ -74,8 +74,8 @@ def spectra_match(data, bands):
     is_absorbance = (data.get('yunits') == 'ABSORBANCE')
 
     matches = []
-    for band in bands:
-        limits = (band[0] < spectrum[0]) * (spectrum[0] < band[1])
+    for peak in peaks:
+        limits = (peak.range[0] < spectrum[0]) * (spectrum[0] < peak.range[1])
 
         # handle case where the spectrum does not even contain the wavelengths
         if not np.any(limits):
@@ -96,3 +96,17 @@ def spectra_match(data, bands):
 
         
     return matches
+
+class PeakCriteria:
+    '''
+    this class is effectively a struct that represents the search criteria for absorption peaks
+    '''
+    def __init__(self, range, strength=None):
+        '''
+        Parameters:
+        range: a 2-tuple representing the wavenumber range the peak should be found within, [0] is the lower bound, [1] is the upper bound
+        strength: float between 0 and 1, representing the desired relative strength of the peak compared to other peaks.
+            If None, then the peak only needs to be present, and not satisfy this relative strength condition
+        '''
+        self.range = range
+        self.strength = strength 
