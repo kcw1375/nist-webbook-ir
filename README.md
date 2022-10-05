@@ -1,6 +1,12 @@
 # NIST-Webbook-IR
 A utility to search through IR spectra on the NIST chemistry webbook (https://webbook.nist.gov/chemistry/) and find matches for molecules based on absorption bands.
 
+## ISSUES
+This program depends on the jcamp package, but the pip release is currently broken.
+Luckily, this is a simple fix.
+
+Simply download the jcamp.py file from the github repo (https://github.com/nzhagen/jcamp) and replace the pip jcamp package by moving it to wherever your pip has downloaded jcamp (`pip show jcamp` to show its location).
+
 ## Decoding Data
 The NIST webbook renders IR spectra from a JCAMP-DX file, which is accessed via a GET request to a url of the form:
 https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=C57136&amp;Index=0&amp;Type=IR
