@@ -77,6 +77,11 @@ def spectra_match(data, bands):
     for band in bands:
         limits = (band[0] < spectrum[0]) * (spectrum[0] < band[1])
 
+        # handle case where the spectrum does not even contain the wavelengths
+        if not np.any(limits):
+            matches.append(False)
+            continue
+
         # if is an absorbance plot
         if is_absorbance:
             # we use the naive method of checking the max within these limits and seeing if that's above the threshold
